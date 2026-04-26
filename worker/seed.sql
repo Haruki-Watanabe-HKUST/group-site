@@ -2,7 +2,6 @@
 -- Run with: wrangler d1 execute watanabe-board --remote --file=./seed.sql
 -- (Use --local for local dev; remove existing rows first if re-running.)
 
-BEGIN TRANSACTION;
 
 -- ca: 18 posts from ca.xlsx
 INSERT INTO posts (board, handle, body, ip_hash, created_at, created_at_unix) VALUES ('ca', '渡辺悠樹', 'お気軽にどうぞ', 'archive-import', '2025-12-29T14:29:57Z', 1766989797);
@@ -416,4 +415,3 @@ INSERT INTO posts (board, handle, body, ip_hash, created_at, created_at_unix) VA
 INSERT INTO posts (board, handle, body, ip_hash, created_at, created_at_unix) VALUES ('am', '渡辺悠樹', '>ynさん
 すべてご指摘の通りです。ありがとうございます。時間が出来次第pdfに反映しておきます。', 'archive-import', '2026-02-09T22:11:35Z', 1770646295);
 
-COMMIT;

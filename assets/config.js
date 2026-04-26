@@ -9,5 +9,5 @@
  *                       (NOT the "Secret key" — that one stays in the Worker)
  *                       Leave as "" to disable Turnstile during local testing.
  */
-window.BOARD_API_URL = "https://REPLACE-ME.workers.dev";
+window.BOARD_API_URL = "https://watanabe-board.hwatanabe.workers.dev";
 window.TURNSTILE_SITE_KEY = "";

@@ -10,14 +10,14 @@ compatibility_date = "2025-01-01"
 # After deploying GitHub Pages, set ALLOWED_ORIGINS to your Pages URL,
 # e.g. "https://<your-github-username>.github.io".
 [vars]
-ALLOWED_ORIGINS = "https://REPLACE-ME.github.io"
+ALLOWED_ORIGINS = "https://haruki-watanabe-hkust.github.io"
 
 # D1 database binding.
 # Run `wrangler d1 create watanabe-board` and paste the returned id below.
 [[d1_databases]]
 binding = "DB"
 database_name = "watanabe-board"
-database_id = "REPLACE-WITH-D1-DATABASE-ID"
+database_id = "b5c22026-12af-4437-b137-6368bbea914c"
 
 # Secrets (DO NOT put values here — use `wrangler secret put NAME`):
 #   ADMIN_PASSWORD          Admin password for the moderation page
