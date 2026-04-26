@@ -10,4 +10,4 @@
  *                       Leave as "" to disable Turnstile during local testing.
  */
 window.BOARD_API_URL = "https://watanabe-board.hwatanabe.workers.dev";
-window.TURNSTILE_SITE_KEY = "";
+window.TURNSTILE_SITE_KEY = "0x4AAAAAADDqD3j78OLBepnE";
