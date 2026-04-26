@@ -268,16 +268,17 @@ code {
 
 .award-figure {
   margin: 2rem auto;
-  max-width: 200px;
   text-align: center;
 }
 .award-figure img {
+  max-width: 200px;
   width: 100%;
   height: auto;
   border-radius: var(--radius);
   box-shadow: var(--shadow-md);
   border: 1px solid var(--border);
   display: block;
+  margin: 0 auto;
 }
 .award-figure figcaption {
   margin-top: 0.85rem;
