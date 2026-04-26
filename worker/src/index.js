@@ -17,7 +17,7 @@
 
 const MAX_HANDLE_LEN = 40;
 const MAX_BODY_LEN = 4000;
-const VALID_BOARDS = ["ca", "am"];
+const VALID_BOARDS = ["ca", "am", "qm"];
 const RATE_LIMIT_WINDOW_SEC = 60;
 const RATE_LIMIT_MAX_POSTS = 3;
 const PUBLIC_LIST_LIMIT = 200;
