@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="robots" content="noindex" />
+<title>掲示板 管理画面 — Watanabe Group</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap" />
+<link rel="stylesheet" href="../assets/style.css" />
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" integrity="sha384-nB0miv6/jRmo5UMMR1wu3Gz6NLsoTkbqJghGIsx//Rlm+ZU03BU6SQNC66uf4l5+" crossorigin="anonymous" />
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js" integrity="sha384-7zkQWkzuo3B5mTepMUcHkMB5jZaolc2xDwL6VFqjFALcbeS9Ggm/Yr2r3Dy4lfFg" crossorigin="anonymous"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js" integrity="sha384-43gviWU0YVjaDtb/GhzOouOXtZMP/7XUzwPTstBeZFe/+rCMvRwr4yROQP43s0Xk" crossorigin="anonymous"></script>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="inner">
+    <span class="site-title"><a href="../index.html" style="color:inherit;text-decoration:none;">渡辺研究室 / Watanabe Group</a></span>
+    <nav>
+      <a href="../index.html">Home</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+
+<h1>掲示板 管理画面</h1>
+
+<p class="muted">
+  このページは、不適切な投稿を確認・削除するためのものです。
+  管理者パスワードを入力するとブラウザのセッション内で保持されます（タブを閉じると消えます）。
+</p>
+
+<section style="margin-top: 1.5rem;">
+  <label>
+    管理者パスワード:
+    <input id="admin-password" type="password" autocomplete="current-password" style="padding:0.4rem 0.6rem;font-size:1rem;border:1px solid #c8c8cc;border-radius:4px;" />
+  </label>
+  <label style="margin-left:1rem;">
+    対象掲示板:
+    <select id="board-selector" style="padding:0.4rem 0.6rem;font-size:1rem;">
+      <option value="ca">複素関数論入門 (ca)</option>
+      <option value="am">解析力学 (am)</option>
+    </select>
+  </label>
+  <button id="reload-btn" class="button" style="margin-left:1rem;">読み込み</button>
+</section>
+
+<p id="admin-status" class="board-status" role="status" aria-live="polite"></p>
+
+<div id="admin-posts" class="posts" style="margin-top:1.5rem;"></div>
+
+</main>
+
+<script src="../assets/config.js"></script>
+<script>
+(function () {
+  "use strict";
+  const API = window.BOARD_API_URL;
+
+  function escapeHtml(s) {
+    return s.replace(/[&<>"']/g, function (c) {
+      return ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c];
+    });
+  }
+
+  function formatTimestamp(iso) {
+    try {
+      const d = new Date(iso);
+      const yyyy = d.getFullYear();
+      const mm = String(d.getMonth() + 1).padStart(2, "0");
+      const dd = String(d.getDate()).padStart(2, "0");
+      const hh = String(d.getHours()).padStart(2, "0");
+      const mi = String(d.getMinutes()).padStart(2, "0");
+      return `${yyyy}/${mm}/${dd} ${hh}:${mi}`;
+    } catch (_e) {
+      return iso;
+    }
+  }
+
+  function getPassword() {
+    const input = document.getElementById("admin-password");
+    const stored = sessionStorage.getItem("admin_password") || "";
+    if (input.value) {
+      sessionStorage.setItem("admin_password", input.value);
+      return input.value;
+    }
+    if (stored) {
+      input.value = stored;
+      return stored;
+    }
+    return "";
+  }
+
+  function setStatus(text, kind) {
+    const s = document.getElementById("admin-status");
+    s.textContent = text;
+    s.className = "board-status" + (kind ? " " + kind : "");
+  }
+
+  async function loadPosts() {
+    const pw = getPassword();
+    const board = document.getElementById("board-selector").value;
+    const container = document.getElementById("admin-posts");
+    if (!pw) { setStatus("管理者パスワードを入力してください。", "error"); return; }
+    setStatus("読み込み中…");
+
+    try {
+      const res = await fetch(API + "/admin/posts?board=" + encodeURIComponent(board), {
+        headers: { Accept: "application/json", "X-Admin-Password": pw },
+      });
+      if (res.status === 401) { setStatus("パスワードが正しくありません。", "error"); return; }
+      if (!res.ok) throw new Error("HTTP " + res.status);
+      const data = await res.json();
+      const posts = data.posts || [];
+      if (posts.length === 0) {
+        container.innerHTML = '<div class="post-empty">投稿はありません。</div>';
+        setStatus("");
+        return;
+      }
+      container.innerHTML = posts.map(function (p) {
+        return [
+          '<article class="post admin-post" id="post-' + p.id + '" data-id="' + p.id + '">',
+          '<div class="post-header">',
+          '<span class="handle">' + escapeHtml(p.handle || "名無し") + "</span>",
+          '<span class="ts">' + formatTimestamp(p.created_at) + " / id=" + p.id + " / IP=" + escapeHtml(p.ip_hash || "") + "</span>",
+          "</div>",
+          '<div class="post-body">' + escapeHtml(p.body) + "</div>",
+          '<div style="margin-top:0.5rem;text-align:right;">',
+          '<button class="delete-btn" data-id="' + p.id + '">削除</button>',
+          "</div>",
+          "</article>",
+        ].join("");
+      }).join("");
+      if (window.renderMathInElement) {
+        window.renderMathInElement(container, {
+          delimiters: [
+            { left: "$$", right: "$$", display: true },
+            { left: "$", right: "$", display: false },
+          ],
+          throwOnError: false,
+        });
+      }
+      setStatus("");
+    } catch (e) {
+      setStatus("読み込みに失敗しました: " + e.message, "error");
+    }
+  }
+
+  async function deletePost(id) {
+    const pw = getPassword();
+    if (!pw) { setStatus("パスワードが設定されていません。", "error"); return; }
+    if (!confirm("投稿 #" + id + " を削除しますか？")) return;
+    try {
+      const res = await fetch(API + "/admin/posts/" + id, {
+        method: "DELETE",
+        headers: { "X-Admin-Password": pw },
+      });
+      if (res.status === 401) { setStatus("パスワードが正しくありません。", "error"); return; }
+      if (!res.ok) throw new Error("HTTP " + res.status);
+      const el = document.getElementById("post-" + id);
+      if (el) el.classList.add("deleted");
+      setStatus("削除しました。", "ok");
+    } catch (e) {
+      setStatus("削除に失敗しました: " + e.message, "error");
+    }
+  }
+
+  document.getElementById("reload-btn").addEventListener("click", loadPosts);
+  document.getElementById("admin-posts").addEventListener("click", function (e) {
+    if (e.target.classList.contains("delete-btn")) {
+      deletePost(e.target.dataset.id);
+    }
+  });
+  document.getElementById("admin-password").addEventListener("keydown", function (e) {
+    if (e.key === "Enter") loadPosts();
+  });
+
+  // Auto-load if a password is already stored from a previous tab session.
+  if (sessionStorage.getItem("admin_password")) loadPosts();
+})();
+</script>
+
+</body>
+</html>

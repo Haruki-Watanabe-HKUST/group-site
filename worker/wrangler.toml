@@ -1,0 +1,25 @@
+# Cloudflare Worker configuration for the bulletin board API.
+# After running `wrangler d1 create watanabe-board`, paste the returned
+# database_id into the d1_databases entry below.
+
+name = "watanabe-board"
+main = "src/index.js"
+compatibility_date = "2025-01-01"
+
+# Public, non-secret variables.
+# After deploying GitHub Pages, set ALLOWED_ORIGINS to your Pages URL,
+# e.g. "https://<your-github-username>.github.io".
+[vars]
+ALLOWED_ORIGINS = "https://REPLACE-ME.github.io"
+
+# D1 database binding.
+# Run `wrangler d1 create watanabe-board` and paste the returned id below.
+[[d1_databases]]
+binding = "DB"
+database_name = "watanabe-board"
+database_id = "REPLACE-WITH-D1-DATABASE-ID"
+
+# Secrets (DO NOT put values here — use `wrangler secret put NAME`):
+#   ADMIN_PASSWORD          Admin password for the moderation page
+#   TURNSTILE_SECRET_KEY    Cloudflare Turnstile secret key
+#   IP_HASH_SALT            Random string (e.g. `openssl rand -hex 32`)

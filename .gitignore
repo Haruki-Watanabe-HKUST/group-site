@@ -1,0 +1,9 @@
+.DS_Store
+node_modules/
+.wrangler/
+.dev.vars
+.env
+*.log
+
+# Original spreadsheet exports — kept locally as backup, not published
+books/*.xlsx

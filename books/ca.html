@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>「複素関数論入門」サポートページ — Watanabe Group</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap" />
+<link rel="stylesheet" href="../assets/style.css" />
+
+<!-- KaTeX (LaTeX rendering) via jsDelivr CDN -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" integrity="sha384-nB0miv6/jRmo5UMMR1wu3Gz6NLsoTkbqJghGIsx//Rlm+ZU03BU6SQNC66uf4l5+" crossorigin="anonymous" />
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js" integrity="sha384-7zkQWkzuo3B5mTepMUcHkMB5jZaolc2xDwL6VFqjFALcbeS9Ggm/Yr2r3Dy4lfFg" crossorigin="anonymous"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js" integrity="sha384-43gviWU0YVjaDtb/GhzOouOXtZMP/7XUzwPTstBeZFe/+rCMvRwr4yROQP43s0Xk" crossorigin="anonymous"></script>
+
+<!-- Cloudflare Turnstile (loaded only if a site key is configured) -->
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js?onload=onloadTurnstileCallback" async defer></script>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="inner">
+    <span class="site-title"><a href="../index.html" style="color:inherit;text-decoration:none;">渡辺研究室 / Watanabe Group</a></span>
+    <nav>
+      <a href="../index.html">Home</a>
+      <a href="../members/index.html">メンバー</a>
+      <a href="ca.html">複素関数論入門</a>
+      <a href="am.html">解析力学</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+
+<h1>「複素関数論入門」サポートページ</h1>
+
+<img src="ca.png" alt="『複素関数論入門』表紙" class="book-cover" />
+
+<p>
+  渡辺悠樹 著『複素関数論入門』<br />
+  共立出版, 2026年2月24日 発行
+</p>
+
+<ul>
+  <li><a href="https://drive.google.com/file/d/1l6mum5oeSivqSpmS-P2ip2GGTeMQKRYp/view?usp=sharing">質問への回答と誤植訂正</a>（PDF）</li>
+  <li><a href="https://www.kyoritsu-pub.co.jp/book/b10154342.html">共立出版 公式ページ</a></li>
+  <li><a href="https://amzn.to/4cL2vjZ">Amazon 販売ページ</a></li>
+</ul>
+
+<h2>お問い合わせ</h2>
+<p>
+  本書に関するお問い合わせは、下の掲示板への投稿、または
+  <a href="mailto:hwatanabe@ust.hk">hwatanabe@ust.hk</a>
+  までお願いします。
+</p>
+
+<!-- ===== Bulletin board ===== -->
+<section class="board" data-board-id="ca" aria-label="複素関数論入門 質問掲示板">
+  <h2>質問・誤植報告 掲示板</h2>
+
+  <p class="muted">
+    本書に関するご質問や誤植のご指摘をお寄せください。アカウント登録は不要です。<br />
+    数式は LaTeX 記法で書けます。例：<code>$f(z) = \sum_{n=0}^{\infty} a_n z^n$</code>（インライン）、
+    <code>$$\oint_C f(z)\,dz = 0$$</code>（ディスプレイ）。
+  </p>
+
+  <form class="board-form" autocomplete="off">
+    <label for="ca-handle">ハンドルネーム</label>
+    <input id="ca-handle" type="text" name="handle" maxlength="40" required />
+
+    <label for="ca-body">質問内容</label>
+    <textarea id="ca-body" name="body" maxlength="4000" required placeholder="質問・誤植のご指摘をお書きください。LaTeX 記法（$ ... $ や $$ ... $$）に対応しています。"></textarea>
+    <div class="hint">最大 4000 文字。投稿は管理者の確認後に削除される場合があります。</div>
+
+    <!-- honeypot field (hidden from real users; bots tend to fill it) -->
+    <div class="honeypot" aria-hidden="true">
+      <label>Website (do not fill in)<input type="text" name="website" tabindex="-1" autocomplete="off" /></label>
+    </div>
+
+    <div class="cf-turnstile" data-size="normal"></div>
+
+    <div class="form-actions">
+      <button type="submit" class="button">投稿する</button>
+      <span class="board-status" role="status" aria-live="polite"></span>
+    </div>
+  </form>
+
+  <div class="posts" aria-live="polite">
+  <article class="post" id="post-archive-18">
+    <div class="post-header">
+      <span class="handle">渡辺悠樹</span>
+      <span class="ts">2026/04/22 08:48</span>
+    </div>
+    <div class="post-body">&gt;とるするとさん
+(7.93)式においてのフーリエ逆変換はx=0の点を見ているのでe^{ikx}=1となっています。色々とご質問・ご指摘ありがとうございました。他にもお気付きの点がございましたらお知らせください。</div>
+  </article>
+  <article class="post" id="post-archive-17">
+    <div class="post-header">
+      <span class="handle">渡辺悠樹</span>
+      <span class="ts">2026/04/22 08:47</span>
+    </div>
+    <div class="post-body">&gt;とるするとさん
+提出した原稿では\sum_{k=0}|z|^lではなく，\sum_{l=0}|z|^lとなっていました。何かの手違いがあったのだと思われます。pdfを更新しておきました。</div>
+  </article>
+  <article class="post" id="post-archive-16">
+    <div class="post-header">
+      <span class="handle">渡辺悠樹</span>
+      <span class="ts">2026/04/22 08:22</span>
+    </div>
+    <div class="post-body">&gt;とるするとさん
+4.41式は和の前の分数を消し忘れていました。ご指摘ありがとうございます。</div>
+  </article>
+  <article class="post" id="post-archive-15">
+    <div class="post-header">
+      <span class="handle">渡辺悠樹</span>
+      <span class="ts">2026/04/22 08:17</span>
+    </div>
+    <div class="post-body">&gt;とるするとさん
+2.30式の下は2.29式の右辺の級数を指しているので、これは絶対収束で正しいです。もちろん、2.28式の級数は絶対収束しません。</div>
+  </article>
+  <article class="post" id="post-archive-14">
+    <div class="post-header">
+      <span class="handle">渡辺悠樹</span>
+      <span class="ts">2026/04/22 07:39</span>
+    </div>
+    <div class="post-body">&gt;とるするとさん
+ありがとうございます。今すぐ確認します。</div>
+  </article>
+  <article class="post" id="post-archive-13">
+    <div class="post-header">
+      <span class="handle">とるすると</span>
+      <span class="ts">2026/04/21 15:44</span>
+    </div>
+    <div class="post-body">(7.93)式において，フーリエ逆変換を考えるならば，e^{ikx}をかけて計算するのではないですか</div>
+  </article>
+  <article class="post" id="post-archive-12">
+    <div class="post-header">
+      <span class="handle">とるすると</span>
+      <span class="ts">2026/04/19 19:30</span>
+    </div>
+    <div class="post-body">(5.104)の2つ上の行のR_jの表式は|z|^\ellではなく，|z|^kではないですか</div>
+  </article>
+  <article class="post" id="post-archive-11">
+    <div class="post-header">
+      <span class="handle">とるすると</span>
+      <span class="ts">2026/04/18 16:56</span>
+    </div>
+    <div class="post-body">4.41式の(z-z_0)^{m+1}は(z-z_0)^mではないですか</div>
+  </article>
+  <article class="post" id="post-archive-10">
+    <div class="post-header">
+      <span class="handle">とるすると</span>
+      <span class="ts">2026/04/17 14:45</span>
+    </div>
+    <div class="post-body">2.30式の下の文章，”絶対収束し，”は”収束し，”ではないですか</div>
+  </article>
+  <article class="post" id="post-archive-9">
+    <div class="post-header">
+      <span class="handle">ルー</span>
+      <span class="ts">2026/03/07 14:43</span>
+    </div>
+    <div class="post-body">わかりました、ありがとうございます。</div>
+  </article>
+  <article class="post" id="post-archive-8">
+    <div class="post-header">
+      <span class="handle">渡辺悠樹</span>
+      <span class="ts">2026/03/07 12:09</span>
+    </div>
+    <div class="post-body">&gt; p.34の(2.34)式の書き方を考えるとという件、確かにその通りですね。そのように変更しておきます。p.43 の (2.64) の件は、≦は&quot;＜or＝&quot;という意味なので、仮に等号が成り立たなかったとしてもこのままで正しいですよね。目標は(2.66)のように上から評価することなので。</div>
+  </article>
+  <article class="post" id="post-archive-7">
+    <div class="post-header">
+      <span class="handle">ルー</span>
+      <span class="ts">2026/03/05 15:50</span>
+    </div>
+    <div class="post-body">もう一つお聞きしたいのですが、p.43 の (2.64) 式の一番下の≦は＜でしょうか。
+|z|+|\Delta z|＜rの場合、n=2の項しか等号を満たさないと思うのですが、級数全体としては＜になりますか。</div>
+  </article>
+  <article class="post" id="post-archive-6">
+    <div class="post-header">
+      <span class="handle">ルー</span>
+      <span class="ts">2026/03/05 15:30</span>
+    </div>
+    <div class="post-body">1点目はわかりました、ありがとうございます。2点目確かにこの二つどちらも正しいのですが、p.34の(2.34)式の書き方を考えると、\sum_{n=N}^\infty |z_N|r^{n-N}を書く方が対称的になるかと思います。</div>
+  </article>
+  <article class="post" id="post-archive-5">
+    <div class="post-header">
+      <span class="handle">渡辺悠樹</span>
+      <span class="ts">2026/03/05 06:46</span>
+    </div>
+    <div class="post-body">&gt;ルーさん ご指摘ありがとうございます。1点目はn=Nのとき等号が成立するので現状のもので正しいと思います。2点目は、一番左の&lt;を=にするか、ご指摘のようにするかですね。</div>
+  </article>
+  <article class="post" id="post-archive-4">
+    <div class="post-header">
+      <span class="handle">ルー</span>
+      <span class="ts">2026/03/05 04:01</span>
+    </div>
+    <div class="post-body">p.37 下から3行目は|z_n| &lt; |z_N|r^{n-N}
+(2.41)式 &lt;と=の間の第二項は\sum_{n=N}^\infty |z_N|r^{n-N}</div>
+  </article>
+  <article class="post" id="post-archive-3">
+    <div class="post-header">
+      <span class="handle">渡辺悠樹</span>
+      <span class="ts">2026/02/22 07:56</span>
+    </div>
+    <div class="post-body">&gt;ルーさん ありがとうございます。ご指摘の通りです。pdfを更新しておきます。</div>
+  </article>
+  <article class="post" id="post-archive-2">
+    <div class="post-header">
+      <span class="handle">ルー</span>
+      <span class="ts">2026/02/22 04:12</span>
+    </div>
+    <div class="post-body">p.24の図1.11(a)から(b)の矢印の関数はf(z)=x^2ではなく、f(z)=z^2はずです。</div>
+  </article>
+  <article class="post" id="post-archive-1">
+    <div class="post-header">
+      <span class="handle">渡辺悠樹</span>
+      <span class="ts">2025/12/29 14:29</span>
+    </div>
+    <div class="post-body">お気軽にどうぞ</div>
+  </article>
+  </div>
+</section>
+
+</main>
+
+<script src="../assets/config.js"></script>
+<script src="../assets/board.js"></script>
+
+</body>
+</html>
