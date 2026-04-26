@@ -265,6 +265,27 @@ code {
   border: 1px solid var(--border);
   background: #000;
 }
+
+.award-figure {
+  margin: 2rem auto;
+  max-width: 560px;
+  text-align: center;
+}
+.award-figure img {
+  width: 100%;
+  height: auto;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--border);
+  display: block;
+}
+.award-figure figcaption {
+  margin-top: 0.85rem;
+  font-size: 0.92rem;
+  color: var(--muted);
+  text-align: center;
+  line-height: 1.6;
+}
 .youtube-embed iframe {
   width: 100%;
   height: 100%;
