@@ -7,3 +7,12 @@ node_modules/
 
 # Original spreadsheet exports — kept locally as backup, not published
 books/*.xlsx
+
+# LaTeX auxiliary files
+*.aux
+*.toc
+*.out
+*.dvi
+*.synctex.gz
+*.fdb_latexmk
+*.fls

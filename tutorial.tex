@@ -1,0 +1,465 @@
+\documentclass[11pt,a4paper,uplatex,dvipdfmx]{jsarticle}
+
+\usepackage{graphicx}
+\usepackage{textcomp}
+\usepackage[dvipdfmx]{hyperref}
+\usepackage{pxjahyper}
+\usepackage[dvipdfmx]{xcolor}
+\usepackage{listings}
+
+\hypersetup{
+  colorlinks=true,
+  urlcolor=blue!50!black,
+  linkcolor=black,
+  bookmarks=true,
+  bookmarksnumbered=true,
+}
+
+\lstdefinelanguage{JavaScript}{
+  keywords={typeof, new, true, false, catch, function, return, null, switch, var, if, in, while, do, else, case, break, async, await, const, let, of, throw, this, export, import, default, class, extends, try, instanceof},
+  sensitive=true,
+  comment=[l]{//},
+  morecomment=[s]{/*}{*/},
+  morestring=[b]',
+  morestring=[b]",
+  morestring=[b]`,
+}
+
+\lstset{
+  basicstyle=\ttfamily\footnotesize,
+  breaklines=true,
+  frame=single,
+  framesep=4pt,
+  rulecolor=\color{gray!50},
+  backgroundcolor=\color{gray!8},
+  keywordstyle=\color{blue!70!black}\bfseries,
+  commentstyle=\color{green!50!black}\itshape,
+  stringstyle=\color{red!70!black},
+  numberstyle=\tiny\color{gray},
+  showstringspaces=false,
+  tabsize=2,
+  captionpos=b,
+}
+
+\title{無料サービスだけで作る\\掲示板付きの教科書サポートサイト}
+\author{}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+出版した教科書の読者から質問や誤植情報を受け付けるための「掲示板付きサポートサイト」を、無料のサービスのみで構築する方法をまとめる。訪問者はアカウント登録不要で匿名投稿でき、\LaTeX{} 記法による数式表示、スパム対策、新規投稿時の管理者へのメール通知にも対応する。月間 10 万リクエスト程度であれば全て無料枠で運用できる。
+\end{abstract}
+
+\tableofcontents
+
+\section{はじめに}
+
+教科書を出版すると、読者から質問や誤植のご指摘をいただくことがある。これらを受け付ける手段として、これまで多くの著者が Google Sites と Google Forms を組み合わせた「フォーム送信式の掲示板」を利用してきた。しかしこの構成は連携が壊れやすく、運用負担が大きい。
+
+本ノートでは、Google サービスを使わず、より安定した自前運用が可能な構成を紹介する。実装には次の特徴がある。
+
+\begin{itemize}
+\item 訪問者はアカウント登録不要で匿名投稿できる（ハンドルネームと本文のみ）
+\item \LaTeX{} 記法による数式表示に対応（\texttt{\$x\^{}2\$} のような書式が綺麗に組版される）
+\item 三重のスパム対策：CAPTCHA、IP ベースのレート制限、ハニーポット
+\item 新規投稿があった際の管理者へのメール通知
+\item 不適切投稿を削除するためのパスワード認証付き管理画面
+\item 月間 10 万リクエストまで完全無料、それ以上の運用も極めて低コスト
+\end{itemize}
+
+なお本ノートは、教科書サポートのような小規模 Q\&A 用途を想定している。大規模掲示板やリアルタイム性を要する用途は別途検討してほしい。
+
+\section{システム構成}
+
+全体は大きく分けて 3 つのコンポーネントで構成される。
+
+\begin{enumerate}
+\item \textbf{静的サイト（フロントエンド）} ー HTML / CSS / JavaScript で書かれたページ群を、無料の静的ホスティングサービスで配信する。
+\item \textbf{API バックエンド} ー 投稿の受付・取得・削除を担うサーバーレス関数。
+\item \textbf{データベース} ー 投稿を保存する SQLite データベース。
+\end{enumerate}
+
+訪問者がブラウザでサイトを開くと、フロントエンドの JavaScript が API バックエンドに対して投稿一覧を取得しに行き、ページに表示する。新規投稿時は同じく API バックエンドにデータを送り、データベースに保存される（図 \ref{fig:overall} のような流れ）。
+
+\begin{figure}[h]
+\centering
+\begin{minipage}{0.92\textwidth}
+\begin{verbatim}
+   訪問者ブラウザ
+        |
+        | (1) HTML/CSS/JS をダウンロード
+        v
+  +------------------+
+  |  静的サイト      |  ← 無料の静的ホスティング
+  | (HTML/CSS/JS)    |
+  +------------------+
+        |
+        | (2) 投稿一覧を JSON で取得 / 新規投稿を送信
+        v
+  +------------------+
+  |  API バック      |  ← サーバーレス関数（無料枠 10 万リクエスト/日）
+  |  エンド (Worker) |
+  +------------------+
+        |
+        | (3) 読み書き
+        v
+  +------------------+
+  |   データベース   |  ← SQLite (D1)
+  +------------------+
+\end{verbatim}
+\end{minipage}
+\caption{システム全体の流れ}
+\label{fig:overall}
+\end{figure}
+
+\section{使用サービスと必要なアカウント}
+
+本構成で利用するサービスは次の通りで、すべて無料プランの範囲内で運用できる。
+
+\begin{description}
+\item[GitHub] 静的サイトのソースコード管理と公開（GitHub Pages）。教科書著者個人のアカウントを 1 つ作成。
+\item[Cloudflare] サーバーレス関数（Workers）、データベース（D1）、CAPTCHA（Turnstile）。1 つのアカウントで全機能を利用できる。
+\item[Resend] メール通知用の送信 API。月 3{,}000 通／日 100 通まで無料。
+\end{description}
+
+クレジットカードの登録は不要で、メールアドレスとパスワードだけで全アカウントを作成できる。
+
+\section{構築の流れ}
+
+実際の構築ステップを順を追って示す。
+
+\subsection{静的サイトの作成}
+
+普通の HTML / CSS / JavaScript でサイトを作る。教科書情報や著者プロフィールなどの「読み物」部分は静的 HTML として書く。掲示板部分は、ページ内の特定の箇所に投稿フォームと投稿表示エリアを置き、JavaScript で API を呼び出して動的に投稿を表示する。
+
+最低限のフォーム構造を以下に示す。
+
+\begin{lstlisting}[caption={掲示板フォームの最小構造},language=HTML]
+<section class="board" data-board-id="ca">
+  <form class="board-form">
+    <label>ハンドルネーム
+      <input type="text" name="handle" required maxlength="40" />
+    </label>
+    <label>質問内容
+      <textarea name="body" required maxlength="4000"></textarea>
+    </label>
+    <button type="submit">投稿する</button>
+  </form>
+  <div class="posts"><!-- 投稿一覧を動的に挿入 --></div>
+</section>
+\end{lstlisting}
+
+\subsection{GitHub Pages での公開}
+
+\begin{enumerate}
+\item GitHub アカウントを取得する。
+\item 公開リポジトリを 1 つ作成する。
+\item ローカルでサイトのファイルを Git 管理し、リポジトリへ \texttt{push} する。
+\item リポジトリの設定画面で \textbf{Pages} を有効化する（ブランチ \texttt{main}、ディレクトリ \texttt{/}）。
+\item 数分後、\texttt{https://<ユーザ名>.github.io/<リポジトリ名>/} で公開される。
+\end{enumerate}
+
+GitHub Pages は無料・無制限・SSL 自動・広告なしで、静的サイトのホスティングとして十分に高品質である。
+
+\subsection{Cloudflare Worker と D1 データベース}
+
+掲示板の投稿の受付・取得・削除を担うバックエンドを Cloudflare Workers で構築する。Cloudflare は近年、静的・動的問わずあらゆるホスティングを統合した「フルスタック」プラットフォームに進化しており、本用途に特に向いている。
+
+\subsubsection{Wrangler のインストール}
+
+Cloudflare Workers の CLI ツール \texttt{wrangler} を使う。Node.js（v18 以上）が必要。
+
+\begin{lstlisting}[language=bash]
+mkdir worker && cd worker
+npm init -y
+npm install --save-dev wrangler
+npx wrangler login
+\end{lstlisting}
+
+\texttt{wrangler login} でブラウザが開き、Cloudflare アカウントへの認可を求められるので承認する。
+
+\subsubsection{D1 データベース作成}
+
+\begin{lstlisting}[language=bash]
+npx wrangler d1 create my-board
+\end{lstlisting}
+
+返却される \texttt{database\_id} を後述の \texttt{wrangler.toml} に記入する。
+
+スキーマは次のような単純なテーブル 1 つで十分である。
+
+\begin{lstlisting}[caption={\texttt{schema.sql}},language=SQL]
+CREATE TABLE IF NOT EXISTS posts (
+  id              INTEGER PRIMARY KEY AUTOINCREMENT,
+  board           TEXT    NOT NULL,
+  handle          TEXT    NOT NULL,
+  body            TEXT    NOT NULL,
+  ip_hash         TEXT    NOT NULL,
+  created_at      TEXT    NOT NULL,
+  created_at_unix INTEGER NOT NULL,
+  deleted_at      TEXT
+);
+CREATE INDEX IF NOT EXISTS idx_posts_board_id   ON posts (board, id DESC);
+CREATE INDEX IF NOT EXISTS idx_posts_iphash_ts  ON posts (ip_hash, created_at_unix);
+\end{lstlisting}
+
+スキーマの適用：
+
+\begin{lstlisting}[language=bash]
+npx wrangler d1 execute my-board --remote --file=./schema.sql
+\end{lstlisting}
+
+\subsubsection{Worker の構成ファイル}
+
+\texttt{wrangler.toml} の例：
+
+\begin{lstlisting}[caption={\texttt{wrangler.toml}}]
+name = "my-board"
+main = "src/index.js"
+compatibility_date = "2025-01-01"
+
+[vars]
+ALLOWED_ORIGINS = "https://<your-username>.github.io"
+NOTIFY_EMAIL    = "owner@example.com"
+SITE_BASE_URL   = "https://<your-username>.github.io/<repo>"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "my-board"
+database_id   = "（wrangler d1 create が返した ID）"
+\end{lstlisting}
+
+\subsubsection{Worker 本体}
+
+JavaScript で次のようなエンドポイントを実装する。要点だけ抜粋する（完全版は付録を参照）。
+
+\begin{lstlisting}[caption={\texttt{src/index.js}（要点）},language=JavaScript]
+export default {
+  async fetch(request, env, ctx) {
+    const url = new URL(request.url);
+    if (request.method === "OPTIONS") return cors(env, new Response(null, {status: 204}));
+
+    if (url.pathname === "/posts" && request.method === "GET")  return cors(env, await listPosts(env, url));
+    if (url.pathname === "/posts" && request.method === "POST") return cors(env, await createPost(request, env, ctx));
+    // /admin/posts ... (認証付きで一覧と削除)
+    return cors(env, json({error: "not_found"}, 404));
+  },
+};
+\end{lstlisting}
+
+\subsubsection{シークレットの登録とデプロイ}
+
+管理画面用パスワードや IP ハッシュ用のソルトをシークレットとして登録する。
+
+\begin{lstlisting}[language=bash]
+npx wrangler secret put ADMIN_PASSWORD
+npx wrangler secret put IP_HASH_SALT      # openssl rand -hex 32 などで生成
+npx wrangler deploy
+\end{lstlisting}
+
+\texttt{deploy} 後に表示される URL（\texttt{https://<worker名>.<アカウント名>.workers.dev}）が API のエンドポイントになる。
+
+\subsection{フロントエンドからの接続}
+
+フロントエンドの JavaScript から、上で得た Worker の URL を呼び出す。設定は別ファイル（例：\texttt{config.js}）に切り出しておくと扱いやすい。
+
+\begin{lstlisting}[language=JavaScript]
+window.BOARD_API_URL = "https://my-board.<your-cf>.workers.dev";
+window.TURNSTILE_SITE_KEY = "（後述の Turnstile で取得）";
+\end{lstlisting}
+
+クライアント側の処理は概ね次の流れで実装する。
+\begin{itemize}
+\item ページ読み込み時に \texttt{GET /posts?board=...} で投稿一覧を取得し DOM に挿入。
+\item 投稿フォームの \texttt{submit} 時に \texttt{POST /posts} で投稿を送信、成功したら一覧を再取得。
+\end{itemize}
+
+\section{追加機能の実装}
+
+\subsection{\LaTeX{} 記法による数式表示}
+
+KaTeX という JavaScript ライブラリを使うと、ブラウザ上で \LaTeX{} 数式が美しく組版される。HTML の \texttt{<head>} に CDN から CSS と JS を読み込み、auto-render 拡張で投稿本文の数式を一括処理する。
+
+\begin{lstlisting}[language=HTML]
+<link rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+<script defer
+  src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+<script defer
+  src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js">
+</script>
+\end{lstlisting}
+
+投稿本文を DOM に挿入した後、次の関数を呼ぶ。
+
+\begin{lstlisting}[language=JavaScript]
+renderMathInElement(container, {
+  delimiters: [
+    {left: "$$", right: "$$", display: true},
+    {left: "$",  right: "$",  display: false},
+  ],
+  throwOnError: false,
+});
+\end{lstlisting}
+
+これで \texttt{\$f(z) = \textbackslash sum a\_n z^n\$} のような書式がブラウザで自然に数式として表示される。サーバー側に \LaTeX{} 環境は不要で、すべてクライアント側で完結する。
+
+\subsection{スパム対策}
+
+匿名投稿を許す以上、スパムは必ず来る。次の三段で対処する。
+
+\subsubsection{Cloudflare Turnstile（CAPTCHA）}
+
+「私はロボットではない」を確認する CAPTCHA。Cloudflare の Turnstile は完全無料・無制限で、しかも訪問者のほとんどに対しては不可視で動作する。導入手順：
+
+\begin{enumerate}
+\item Cloudflare ダッシュボードで Turnstile セクションを開き、サイトを追加。
+\item ホスト名（GitHub Pages のドメイン）を登録、Widget Mode は \textbf{Managed} を選択。
+\item 発行された \textbf{Site Key} と \textbf{Secret Key} を取得。
+\item Site Key はフロントの \texttt{config.js} に、Secret Key は \texttt{wrangler secret put TURNSTILE\_SECRET\_KEY} で Worker に登録。
+\item フォーム内に \texttt{<div class="cf-turnstile" data-sitekey="..."></div>} を置く。
+\item Worker 側で受け取ったトークンを Cloudflare の検証 API（\texttt{siteverify}）に POST して検証。
+\end{enumerate}
+
+\subsubsection{ハニーポット}
+
+ボットだけが入力してしまうダミーの入力欄を、CSS で画面外に隠して配置する。
+
+\begin{lstlisting}[language=HTML]
+<div style="position:absolute;left:-9999px" aria-hidden="true">
+  <label>Website (do not fill in)
+    <input type="text" name="website" tabindex="-1" autocomplete="off" />
+  </label>
+</div>
+\end{lstlisting}
+
+サーバー側で \texttt{website} 欄が空でない投稿を即座に拒否する。
+
+\subsubsection{IP ベースのレート制限}
+
+各投稿について、訪問者の IP アドレスをハッシュ化（プライバシー配慮）してデータベースに保存しておき、直近の一定時間内の投稿数をカウントする。閾値を超えた場合は HTTP 429 を返す。
+
+\begin{lstlisting}[language=JavaScript]
+const since = nowSec() - 60;  // 60 秒以内
+const recent = await env.DB.prepare(
+  "SELECT COUNT(*) AS c FROM posts WHERE ip_hash = ? AND created_at_unix >= ?"
+).bind(ipHash, since).first();
+if (recent.c >= 3) return json({error: "rate_limited"}, 429);
+\end{lstlisting}
+
+IP のハッシュ化は、原文を保存せず短い salted SHA-256 を保存することで、識別性を保ちつつプライバシーを守る。
+
+\subsection{メール通知}
+
+新規投稿があった際に、管理者にメールで通知する仕組みを Resend 経由で実装する。Resend はモダンなメール送信 API で、開発者向けに使いやすい。
+
+\subsubsection{Resend のセットアップ}
+
+\begin{enumerate}
+\item Resend アカウントを取得（メール+パスワードで登録）。
+\item ダッシュボードで API キーを発行（送信権限のみ）。
+\item Worker のシークレットに登録：\texttt{npx wrangler secret put RESEND\_API\_KEY}。
+\item 送信元として、初期は Resend のテスト用ドメイン（\texttt{onboarding@resend.dev}）を使う。後でドメイン認証すれば任意の送信元に変更可能。
+\end{enumerate}
+
+\subsubsection{Worker からの送信}
+
+Worker の投稿処理の最後に、\texttt{ctx.waitUntil} を使って非同期にメールを送る。これによりレスポンスを遅延させずに通知できる。
+
+\begin{lstlisting}[language=JavaScript]
+async function sendNotification(env, board, handle, body, postId) {
+  await fetch("https://api.resend.com/emails", {
+    method: "POST",
+    headers: {
+      "Authorization": "Bearer " + env.RESEND_API_KEY,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      from: "Board Notifier <onboarding@resend.dev>",
+      to:   [env.NOTIFY_EMAIL],
+      subject: `[掲示板] ${board} に新規投稿（${handle}）`,
+      text: `投稿者: ${handle}\n\n${body}\n\n---\nID: ${postId}`,
+    }),
+  });
+}
+\end{lstlisting}
+
+メールが迷惑メールフォルダに振り分けられる場合は、メールクライアントの「迷惑メールではない」設定や Safe senders への追加で改善できる。長期的には独自ドメインを Resend で認証すると到達率が大きく向上する。
+
+\subsection{管理画面}
+
+不適切な投稿を削除するための簡易管理画面を別ページに用意する。仕組みは単純で：
+
+\begin{itemize}
+\item ブラウザでパスワード入力 → \texttt{sessionStorage} に保存
+\item API へのリクエスト時に \texttt{X-Admin-Password} ヘッダで送信
+\item Worker 側でシークレット \texttt{ADMIN\_PASSWORD} と定数時間比較で検証
+\item 検証 OK なら一覧取得・削除を許可
+\end{itemize}
+
+削除はソフト削除（\texttt{deleted\_at} を埋めるだけ）にしておくと、誤削除時の復元やログ確認が容易になる。
+
+\section{運用と保守}
+
+\subsection{コードの更新}
+
+サイトのコンテンツを更新したい時は、ローカルで HTML を書き換えて \texttt{git push} すれば、GitHub Pages は数分で再ビルドされ反映される。Worker 側のコードを変更した場合は \texttt{npx wrangler deploy} を実行する。
+
+\subsection{過去データの取り込み}
+
+旧来の Google Forms 等で蓄積された過去の投稿は、CSV / xlsx をエクスポートし、整形した \texttt{INSERT} 文を D1 に流し込むことで一括投入できる。
+
+\begin{lstlisting}[language=bash]
+npx wrangler d1 execute my-board --remote --file=./seed.sql
+\end{lstlisting}
+
+\subsection{無料枠の確認}
+
+\begin{description}
+\item[GitHub Pages] リポジトリ 1 GB、月 100 GB 帯域、ソフトな制限のみ。
+\item[Cloudflare Workers] 1 日 10 万リクエスト、CPU 時間 10 ms / リクエスト。
+\item[Cloudflare D1] ストレージ 5 GB、月 500 万行読み取り、月 1 億行書き込み。
+\item[Cloudflare Turnstile] 完全無制限。
+\item[Resend] 月 3{,}000 通、1 日 100 通。
+\end{description}
+
+教科書サポート規模であれば、これらの上限を超えることはまずない。仮に超えた場合も、Cloudflare・Resend ともに月 5\UTF{FF5E}20 USD 程度の安価な有料プランで大幅に増額できる。
+
+\subsection{セキュリティ・プライバシーの注意}
+
+\begin{itemize}
+\item \texttt{ADMIN\_PASSWORD}、\texttt{RESEND\_API\_KEY}、\texttt{TURNSTILE\_SECRET\_KEY}、\texttt{IP\_HASH\_SALT} は必ず Worker のシークレットとして登録し、Git リポジトリには絶対にコミットしない。
+\item GitHub のリポジトリは public でも問題ないが、\texttt{.gitignore} で機密ファイル・元データ（個人情報を含み得る xlsx 等）を除外する。
+\item 訪問者の IP は原文ではなく salted SHA-256 ハッシュで保存することで、個人識別性を最低限に抑えつつレート制限を機能させる。
+\end{itemize}
+
+\section{まとめ}
+
+教科書サポートサイトに掲示板を付けるための、無料サービスを使った構成を紹介した。要点を再掲する。
+
+\begin{itemize}
+\item フロントは GitHub Pages で配信、バックエンドは Cloudflare Workers + D1。
+\item \LaTeX{} 数式は KaTeX、CAPTCHA は Cloudflare Turnstile、メール通知は Resend。
+\item スパム対策は CAPTCHA・レート制限・ハニーポットの三重で実用上は十分。
+\item すべて無料枠で運用可能。
+\end{itemize}
+
+旧来の Google Sites / Forms と比較した利点は、構成がシンプルでサービス間連携の破綻が起きにくく、長期運用に耐える点である。教科書サポートサイトのみならず、研究室の Q\&A 用掲示板や、学会プレゼンテーション後の質問受付など、似た用途にも応用できる。
+
+\appendix
+
+\section{参考リンク}
+
+\begin{description}
+\item[GitHub Pages] \url{https://docs.github.com/pages}
+\item[Cloudflare Workers] \url{https://developers.cloudflare.com/workers/}
+\item[Cloudflare D1] \url{https://developers.cloudflare.com/d1/}
+\item[Cloudflare Turnstile] \url{https://developers.cloudflare.com/turnstile/}
+\item[KaTeX] \url{https://katex.org/}
+\item[Resend] \url{https://resend.com/}
+\end{description}
+
+\end{document}
