@@ -11,6 +11,8 @@ compatibility_date = "2025-01-01"
 # e.g. "https://<your-github-username>.github.io".
 [vars]
 ALLOWED_ORIGINS = "https://haruki-watanabe-hkust.github.io"
+NOTIFY_EMAIL = "hwatanabe@ust.hk"
+SITE_BASE_URL = "https://haruki-watanabe-hkust.github.io/group-site"
 
 # D1 database binding.
 # Run `wrangler d1 create watanabe-board` and paste the returned id below.

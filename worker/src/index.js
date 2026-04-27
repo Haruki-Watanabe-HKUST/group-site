@@ -13,6 +13,9 @@
  *   env.ALLOWED_ORIGINS              Comma-separated list of allowed CORS origins
  *                                    e.g. "https://<user>.github.io,https://example.com"
  *   env.IP_HASH_SALT                 (secret) Random string used to hash visitor IPs
+ *   env.RESEND_API_KEY               (secret) Resend API key for new-post email notifications
+ *   env.NOTIFY_EMAIL                 Address to receive new-post notifications
+ *   env.SITE_BASE_URL                Base URL of the site, used in notification email links
  */
 
 const MAX_HANDLE_LEN = 40;
@@ -36,7 +39,7 @@ export default {
       if (url.pathname === "/posts" && request.method === "GET") {
         response = await handleListPosts(request, env, url);
       } else if (url.pathname === "/posts" && request.method === "POST") {
-        response = await handleCreatePost(request, env);
+        response = await handleCreatePost(request, env, ctx);
       } else if (url.pathname === "/admin/posts" && request.method === "GET") {
         response = await handleAdminList(request, env, url);
       } else if (url.pathname.startsWith("/admin/posts/") && request.method === "DELETE") {
@@ -68,7 +71,7 @@ async function handleListPosts(request, env, url) {
   return json({ posts: results });
 }
 
-async function handleCreatePost(request, env) {
+async function handleCreatePost(request, env, ctx) {
   let payload;
   try {
     payload = await request.json();
@@ -111,7 +114,61 @@ async function handleCreatePost(request, env) {
     "INSERT INTO posts (board, handle, body, ip_hash, created_at, created_at_unix) VALUES (?, ?, ?, ?, ?, ?)"
   ).bind(board, handle, body, ipHash, nowIso, nowUnix).run();
 
+  // Fire-and-forget email notification (do not block the user's response).
+  if (ctx && env.RESEND_API_KEY && env.NOTIFY_EMAIL) {
+    ctx.waitUntil(sendNotification(env, board, handle, body, result.meta.last_row_id));
+  }
+
   return json({ ok: true, id: result.meta.last_row_id });
+}
+
+const BOARD_DISPLAY_NAMES = {
+  ca: "複素関数論入門",
+  am: "解析力学",
+  qm: "量子多体系の対称性とトポロジー",
+};
+
+async function sendNotification(env, board, handle, body, postId) {
+  const boardName = BOARD_DISPLAY_NAMES[board] || board;
+  const baseUrl = env.SITE_BASE_URL || "";
+  const pageUrl = baseUrl ? `${baseUrl}/books/${board}.html` : "";
+  const adminUrl = baseUrl ? `${baseUrl}/board/admin.html` : "";
+
+  const subject = `[掲示板] ${boardName} に新しい投稿（${handle}）`;
+  const text = [
+    `掲示板「${boardName}」に新しい投稿が届きました。`,
+    ``,
+    `投稿者: ${handle}`,
+    `投稿 ID: ${postId}`,
+    ``,
+    `--- 投稿内容 ---`,
+    body,
+    `--- ここまで ---`,
+    ``,
+    pageUrl ? `掲示板ページ: ${pageUrl}` : "",
+    adminUrl ? `管理画面（削除等）: ${adminUrl}` : "",
+  ].filter(Boolean).join("\n");
+
+  try {
+    const res = await fetch("https://api.resend.com/emails", {
+      method: "POST",
+      headers: {
+        Authorization: "Bearer " + env.RESEND_API_KEY,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        from: "Watanabe Group Board <onboarding@resend.dev>",
+        to: [env.NOTIFY_EMAIL],
+        subject: subject,
+        text: text,
+      }),
+    });
+    if (!res.ok) {
+      console.error("Resend API error:", res.status, await res.text());
+    }
+  } catch (e) {
+    console.error("Email notification failed:", e);
+  }
 }
 
 async function handleAdminList(request, env, url) {
