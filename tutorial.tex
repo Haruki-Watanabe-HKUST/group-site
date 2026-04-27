@@ -308,7 +308,7 @@ renderMathInElement(container, {
 });
 \end{lstlisting}
 
-これで \texttt{\$f(z) = \textbackslash sum a\_n z^n\$} のような書式がブラウザで自然に数式として表示される。サーバー側に \LaTeX{} 環境は不要で、すべてクライアント側で完結する。
+これで \texttt{\$f(z) = \textbackslash sum a\_n z\^{}n\$} のような書式がブラウザで自然に数式として表示される。サーバー側に \LaTeX{} 環境は不要で、すべてクライアント側で完結する。
 
 \subsection{スパム対策}
 
@@ -429,7 +429,7 @@ npx wrangler d1 execute my-board --remote --file=./seed.sql
 \item[Resend] 月 3{,}000 通、1 日 100 通。
 \end{description}
 
-教科書サポート規模であれば、これらの上限を超えることはまずない。仮に超えた場合も、Cloudflare・Resend ともに月 5\UTF{FF5E}20 USD 程度の安価な有料プランで大幅に増額できる。
+教科書サポート規模であれば、これらの上限を超えることはまずない。仮に超えた場合も、Cloudflare・Resend ともに月 5～20 USD 程度の安価な有料プランで大幅に増額できる。
 
 \subsection{セキュリティ・プライバシーの注意}
 
