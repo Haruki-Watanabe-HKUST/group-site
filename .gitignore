@@ -16,3 +16,7 @@ books/*.xlsx
 *.synctex.gz
 *.fdb_latexmk
 *.fls
+
+*.synctex
+*.synctex(busy)
+*.synctex.gz
