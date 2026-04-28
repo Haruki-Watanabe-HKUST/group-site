@@ -20,3 +20,6 @@ books/*.xlsx
 *.synctex
 *.synctex(busy)
 *.synctex.gz
+
+# Reference: HKUST Drupal site export — local only, not published
+English/
