@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>研究 — Watanabe Group</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap" />
+<link rel="stylesheet" href="assets/style.css" />
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" integrity="sha384-nB0miv6/jRmo5UMMR1wu3Gz6NLsoTkbqJghGIsx//Rlm+ZU03BU6SQNC66uf4l5+" crossorigin="anonymous" />
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js" integrity="sha384-7zkQWkzuo3B5mTepMUcHkMB5jZaolc2xDwL6VFqjFALcbeS9Ggm/Yr2r3Dy4lfFg" crossorigin="anonymous"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js" integrity="sha384-43gviWU0YVjaDtb/GhzOouOXtZMP/7XUzwPTstBeZFe/+rCMvRwr4yROQP43s0Xk" crossorigin="anonymous" onload="renderMathInElement(document.body, {delimiters: [{left:'$$', right:'$$', display:true},{left:'$', right:'$', display:false}], throwOnError: false});"></script>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="inner">
+    <span class="site-title"><a href="index.html" style="color:inherit;text-decoration:none;">渡辺研究室 / Watanabe Group</a></span>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="members/index.html">メンバー</a>
+      <a href="research.html">研究</a>
+      <a href="books/am.html">解析力学</a>
+      <a href="books/ca.html">複素関数論入門</a>
+      <a href="books/qm.html">量子多体系の対称性とトポロジー</a>
+      <a href="admissions.html">大学院生募集</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+
+<h1>研究</h1>
+
+<p>
+  当研究室は、量子多体系の普遍的構造を「対称性」という統一的な視点から研究しています。
+  中心となるのは、自発的対称性の破れ、トポロジカル相、量子格子模型の厳密な数学的構造など、
+  凝縮系物理における対称性に関連する現象の基礎と帰結です。
+  我々は厳密な理論（一般定理の証明、no-go 定理、束縛の導出）と、
+  広く応用可能な枠組み（230 ある結晶空間群すべてで使える対称性指標など）、
+  そして実在物質に対する具体的予言とを組み合わせて研究を進めています。
+  現在の研究は、相互に関連した以下の 5 つの方向に分かれます。
+</p>
+
+<h2>1. 自発的対称性の破れと南部・ゴールドストーンボソン</h2>
+
+<figure class="research-figure">
+  <img src="research/ssb_coset.png" alt="自発的対称性の破れに伴うコセット空間 G/H" />
+  <figcaption>
+    自発的に破れた対称性に伴うコセット空間 $G/H$：
+    (a) $U(1) \to$ 自明 では $S^1$、(b)(c) $SO(3) \to SO(2)$ では強磁性／反強磁性秩序に対応する 2 通りの $S^2$ が現れる。
+  </figcaption>
+</figure>
+
+<p>
+  連続対称性が自発的に破れると、必ず南部・ゴールドストーン（NG）ボソンと呼ばれるギャップレス励起が現れます。
+  古典的なゴールドストーンの定理は、破れた対称性の生成子 1 つにつき 1 つのモードを予言します。
+  しかし非相対論的な系（凝縮系の多くがこれに含まれる）では、NG モードの数や分散関係はこの古典的描像から大きく逸脱することがあります。
+  例えば強磁性マグノンは線形ではなく 2 次の分散を持ちますし、「期待される」モード数を生み出さない対称性の破れ方も存在します。
+</p>
+
+<p>
+  我々はこれら長年の疑問を統一的に解消するカウント則を確立しました
+  （PRL 108, 251602 (2012); PRX 4, 031057 (2014); Annu. Rev. Condens. Matter Phys. 11, 169 (2020) でレビュー）。
+  同じ枠組みから、平衡状態における量子時間結晶の不在を厳密に証明することにも成功しています
+  （PRL 114, 251603 (2015)）。これは、時間並進対称性が基底状態で自発的に破れることはないことを意味します。
+</p>
+
+<p>
+  最近の研究では、これらの定理の限界を試す驚くべき例も発見されました。
+  絶対零度で連続 $U(1)$ 対称性を自発的に破る 1 次元スピン模型 ―
+  マーミン・ワグナーの定理に対する顕著な反例 ― の発見です
+  （PRL 133, 176001 (2024)、Editors' Suggestion）。
+</p>
+
+<h2>2. トポロジカル相と対称性指標</h2>
+
+<figure class="research-figure">
+  <img src="research/topology_nacl.jpg" alt="塩化ナトリウム結晶の角に現れる分数電荷" />
+  <figcaption>
+    塩化ナトリウム（NaCl）の結晶 ― 食卓にある身近な物質 ― の角に $\pm e/8$ の分数電荷が現れることを我々は理論的に示した。
+    バンド絶縁体における高次トポロジーの現れの一つである（Phys. Rev. X 11, 041064 (2021)）。
+  </figcaption>
+</figure>
+
+<p>
+  トポロジカル絶縁体の発見以降、絶縁体のバンド構造の分類は凝縮系物理の中心的問題となりました。
+  我々は、ブロッホ波動関数の対称性表現だけを用いて任意のバンド絶縁体のトポロジーを判定できる、
+  対称性に基づく枠組みを開発しました。この枠組みは 230 の非磁性空間群および 1651 の磁性空間群の全てを網羅し
+  （Nat. Commun. 8, 50 (2017); Sci. Adv. 4, eaat8685 (2018)）、
+  さらに全ての空間群におけるトポロジカル超伝導体にまで拡張されています（Sci. Adv. 6, eaaz8367 (2020)）。
+  また、ワニエ記述に抵抗を示しつつも通常のトポロジカル絶縁体の枠組みには収まらない
+  「フラジャイル・トポロジー」の概念も明確化しました
+  （PRL 121, 126402 (2018)、Editors' Suggestion）。
+</p>
+
+<p>
+  同じ着想から、有限サイズの NaCl 結晶の角に $\pm e/8$ の分数電荷が現れるという具体的な予言も得られました
+  （PRX 11, 041064 (2021)）。これは身近な食塩の中に潜む高次トポロジカル現象です。
+  物質側では、トポロジカル超伝導体の網羅的探索を主導しています
+  （PRL 129, 027001 (2022)、Editors' Suggestion）。
+</p>
+
+<h2>3. 超伝導体の非線形電磁応答</h2>
+
+<figure class="research-figure">
+  <img src="research/superconductor_diagrams.png" alt="多バンド超伝導体の光学伝導度のダイアグラム表現" />
+  <figcaption>
+    多バンド超伝導体における (a) 線形および (b) 2 次の光学伝導度のダイアグラム表現。arXiv:2410.18679 より。
+  </figcaption>
+</figure>
+
+<p>
+  近年のテラヘルツ実験により、超伝導体の非線形光学応答 ― とりわけ第三高調波生成 ―
+  が観測可能になりました。これは捉えどころのないヒッグスモードの兆候として解釈されています。
+  しかし、これらの応答の微視的理論を構築することは予想以上に微妙です。
+  素朴な摂動論的公式はゲージ不変性をスプリアスに破ってしまいますし、
+  集団モード（ヒッグス、南部・ゴールドストーン）と準粒子の寄与をきちんと分離する必要もあります。
+</p>
+
+<p>
+  我々は BCS 超伝導体における非線形光学応答のゲージ不変な定式化（arXiv:2410.18679; arXiv:2501.13722）を開発し、
+  さらに任意の次数で非線形光学伝導度を制約する厳密な f-sum 則を導出しました
+  （Phys. Rev. B 102, 165137 (2020)）。
+  最近では、第三高調波生成におけるヒッグスモードと準粒子の競合に量子幾何学が果たす役割の定量化に取り組んでいます
+  （arXiv:2512.01200）。
+</p>
+
+<h2>4. フラストレーションのない量子多体系</h2>
+
+<figure class="research-figure">
+  <img src="research/frustration_free.png" alt="Rokhsar-Kivelson 構成と古典マルコフ過程の対応" />
+  <figcaption>
+    Rokhsar-Kivelson 構成: $d+1$ 次元 RK ハミルトニアンの基底状態は、$d$ 次元の古典マルコフ過程のカノニカル分布に対応する。
+    フラストレーションのない量子系と古典確率過程との橋渡しが、我々の厳密な結果の多くを支える。
+  </figcaption>
+</figure>
+
+<figure class="research-figure">
+  <img src="research/dynamical_exponent.png" alt="古典イジング模型の臨界揺らぎ" />
+  <figcaption>
+    線形サイズ $L$ の古典イジング模型における臨界揺らぎ。横軸は $t^{1/z}$ でリスケールしてある（$z$ は動的臨界指数）。
+    我々は $z \geq 2$ をイジング模型に対して厳密に証明し、100 年来の未解決問題を解決した。
+  </figcaption>
+</figure>
+
+<p>
+  強相関物理で名を馳せる多くの模型 ― AKLT 鎖、トーリック符号、Rokhsar-Kivelson 二量体模型、安定化子符号など ―
+  は共通の数学的構造を持っています。
+  すなわち、それらは「フラストレーションのない（frustration-free）」模型であり、
+  ハミルトニアンの各局所項が同時に基底状態によって最小化されます。
+  この特殊な構造のおかげで、これらの模型は解析的に扱いやすい一方、
+  対称性で守られた相、トポロジカル秩序相、フラクトン相など、
+  極めて多様な相をホストすることができます。
+</p>
+
+<p>
+  我々はギャップレスのフラストレーションのない系に対する一般理論を構築し、
+  動的臨界指数や有限サイズギャップに関する厳密な束縛を導出しています。
+  主な成果には、任意のギャップレスフラストレーションのない系で動的臨界指数が $z \geq 2$ を満たさなければならないことの証明
+  （Phys. Rev. X 15, 041050 (2025); PRB 110, 195140 (2024)）、
+  および古典イジング模型に対する類似の厳密な束縛 ― 動的普遍性クラスに関する 100 年来の問題を解決 ―
+  （J. Stat. Phys. 192, 76 (2025)）が挙げられます。
+  さらに、フラストレーションのない自由フェルミオン系の風景の解明も進めています
+  （PRB 112, 115104 (2025); arXiv:2503.12879; arXiv:2503.14312）。
+</p>
+
+<h2>5. スピン氷と水氷の相</h2>
+
+<figure class="research-figure">
+  <img src="research/ice_phase.png" alt="高圧水氷モデルの相図" />
+  <figcaption>
+    モデル格子上での高圧水氷の相図。プロトン無秩序な VII 相と対称的な X 相は、
+    実は同じ相であり、臨界終点（赤星）を超えるクロスオーバーで連続的に結ばれる。
+    一方、対称性の異なる VIII 相は VII から真の相転移で隔てられている（arXiv:2603.19620）。
+  </figcaption>
+</figure>
+
+<p>
+  液体の水と水蒸気は大気圧では非常に異なって見えますが、実は別々の物質相ではありません。
+  臨界点を回り込むことで、相転移を経由せずに連続的に変換できるからです。
+  これらは単一の相が見せる 2 つの顔にすぎません。
+</p>
+
+<p>
+  ここから、高圧の水氷について興味深い問いが生じます。
+  多数の既知の氷相のうち、氷 VII 相と氷 X 相は同じ結晶対称性を持ち、氷 VIII 相は異なる対称性を持ちます。
+  では VII と X は実は同じ相であり、連続的なクロスオーバーで結ばれているのではないか?
+  ちょうど液相と気相の関係のように。
+</p>
+
+<p>
+  我々のグループによる最近のモデル研究はこれを肯定的に答えています。
+  水氷の微視的格子模型では、相 VII と相 X は磁気モノポール的なプロトン欠陥のスクリーニングを通じて連続的に結ばれる一方、
+  対称性の異なる氷 VIII は真の相転移によって VII から分離されています（arXiv:2603.19620）。
+</p>
+
+<p>
+  これは、より深い一般的な問いへとつながります。
+  同一の対称性を持つ有限温度相の中に、絶対零度におけるトポロジカル相分類と類似の、
+  より細かい区別 ― 熱揺らぎを生き延びて分類ラベルとして意味を持ち続けるもの ―
+  は存在しうるか? 我々はこの問いをパイロクロアスピン氷を通じて並行して追究しています。
+  スピン氷の基底状態が従う「アイス・ルール」は、水氷のプロトン配置を支配するルールと数学的に同一であり、
+  創発ゲージ場、フラクショナル化された励起（磁気モノポール）、トポロジカル秩序を宿します。
+  最近の研究では、任意のスピン $S$ に対するパイロクロアスピン氷のトポロジカル相転移を分類し、
+  見かけ上異なる模型を関係づける双対性を明らかにしました
+  （arXiv:2603.03852; arXiv:2604.04346）。
+</p>
+
+<p>
+  これらのプロジェクトは総じて、トポロジーや統計場の理論の現代的ツールを、
+  100 年以上にわたって研究されてきた物質や問題に応用しようとする試みです。
+</p>
+
+</main>
+
+</body>
+</html>

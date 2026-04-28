@@ -1,0 +1,49 @@
+.head-line-light-weight {
+  line-height: 1.6em;
+  font-weight: 300;
+  color: #003366;
+  font-size: 1.4em;
+}
+.profile-name-en {
+  line-height: 1.3em;
+  font-weight: 800;
+  color: #0085b2;
+  font-size: 1.1em;
+}
+.profile-name-tc {
+  line-height: 1.3em;
+  color: #0085b2;
+  font-size: 1em;
+}
+.small-text {
+  line-height: 1.6em;
+  color: #333333;
+  font-size: 0.9em;
+}
+.small-text-color {
+  line-height: 1.6em;
+  color: #0085b2;
+  font-size: 0.9em;
+}
+.hd-light {
+  font-weight: 300;
+}
+.drop-caps {
+  float: left;
+  font-size: 3.5rem;
+  line-height: 1;
+  margin-right: 5px;
+}
+.cke_panel_container .cke_panel_listItem .drop-caps {
+  float: none;
+  font-size: unset;
+  line-height: normal;
+  margin-right: 0;
+}
+body.cke_editable {
+  /* Applied to CKEditor at admin pages only*/
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #F9F9F9;
+}
