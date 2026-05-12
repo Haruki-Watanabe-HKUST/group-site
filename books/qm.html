@@ -60,7 +60,9 @@
   <p class="muted">
     本書に関するご質問や誤植のご指摘をお寄せください。アカウント登録は不要です。<br />
     数式は LaTeX 記法で書けます。例：<code>$|\psi\rangle = \sum_n c_n |n\rangle$</code>（インライン）、
-    <code>$$H = -J \sum_{\langle i,j \rangle} \mathbf{S}_i \cdot \mathbf{S}_j$$</code>（ディスプレイ）。
+    <code>$$H = -J \sum_{\langle i,j \rangle} \mathbf{S}_i \cdot \mathbf{S}_j$$</code>（ディスプレイ）。<br />
+    複数行に渡る数式は <code>$$\begin{aligned} a &amp;= b + c \\ &amp;= d \end{aligned}$$</code> のように
+    <code>aligned</code> 環境を用いてください（<code>eqnarray*</code> 環境はサポートされていません）。
   </p>
 
   <form class="board-form" autocomplete="off">

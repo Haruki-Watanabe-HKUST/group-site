@@ -61,7 +61,9 @@
   <p class="muted">
     本書に関するご質問や誤植のご指摘をお寄せください。アカウント登録は不要です。<br />
     数式は LaTeX 記法で書けます。例：<code>$f(z) = \sum_{n=0}^{\infty} a_n z^n$</code>（インライン）、
-    <code>$$\oint_C f(z)\,dz = 0$$</code>（ディスプレイ）。
+    <code>$$\oint_C f(z)\,dz = 0$$</code>（ディスプレイ）。<br />
+    複数行に渡る数式は <code>$$\begin{aligned} a &amp;= b + c \\ &amp;= d \end{aligned}$$</code> のように
+    <code>aligned</code> 環境を用いてください（<code>eqnarray*</code> 環境はサポートされていません）。
   </p>
 
   <form class="board-form" autocomplete="off">
