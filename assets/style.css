@@ -78,6 +78,39 @@ a:hover {
   color: var(--accent-hover);
 }
 
+/* ===== Language switcher (thin dark bar above the main header) ===== */
+.lang-bar {
+  background: var(--accent-deep);
+  padding: 0.35rem 1.5rem;
+  font-size: 0.82rem;
+}
+.lang-bar .inner {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  text-align: right;
+}
+.lang-bar a,
+.lang-bar span {
+  color: rgba(255, 255, 255, 0.7);
+  text-decoration: none;
+  background: none;
+  padding: 0;
+  margin: 0;
+  transition: color 0.2s ease;
+}
+.lang-bar a:hover {
+  color: #ffffff;
+  background: none;
+}
+.lang-bar .current {
+  color: #ffffff;
+  font-weight: 600;
+}
+.lang-bar .sep {
+  opacity: 0.4;
+  margin: 0 0.5rem;
+}
+
 /* ===== Header (steel-blue band, white text — matches book covers) ===== */
 header.site-header {
   background: var(--accent);
