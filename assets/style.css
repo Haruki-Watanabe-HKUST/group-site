@@ -240,6 +240,7 @@ h2::after {
   height: 2px;
   background: var(--accent);
 }
+h2[id] { scroll-margin-top: 9rem; }
 
 h3 {
   font-size: 1.05rem;
