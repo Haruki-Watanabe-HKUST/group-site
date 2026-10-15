@@ -3,6 +3,14 @@
 無料の構成（GitHub Pages + Cloudflare Worker + D1）で運用する、
 渡辺研究室のサポートサイトと掲示板のソースコードです。
 
+## CV・論文情報の更新方針
+
+CVや論文情報を更新したら、GitHub Pages版と[HKUST版](https://watanabegroup.hkust.edu.hk/)の両方に反映し、公開ページを確認します。GitHub版は日本語・英語・中国語の関係ページ、HKUST版は英語の関係ページを更新します。
+
+CVの原本は、このリポジトリの隣にある `../cv/cv_watanabe.tex` です。生成した `../cv/cv_watanabe.pdf` を `cv/cv_watanabe.pdf` とHKUST版のCVリンク先に配置し、公開PDFが同じ最新版であることを確認します。ニュース、研究紹介、主要論文、論文一覧も、今回の変更に関係する箇所を両サイトで照合します。
+
+HKUST版の編集手順は `../DrupalWebsite/drafts/README.md` を参照してください。認証に本人の操作が必要ならユーザーに伝え、片方が未反映のままの場合はその旨を報告します。ユーザーが一方だけの更新を明示した場合は、その指定に従います。
+
 ## ディレクトリ構成
 
 ```
