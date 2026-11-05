@@ -361,6 +361,71 @@ code {
   text-align: left;
 }
 
+/* ===== Photo guide to airport transfers ===== */
+.access-photo {
+  margin: 0;
+  min-width: 0;
+}
+.access-photo-wide {
+  max-width: 640px;
+  margin: 1.25rem auto;
+}
+.access-photo > a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg-soft);
+  box-shadow: var(--shadow-sm);
+}
+.access-photo > a:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 3px;
+}
+.access-photo img {
+  display: block;
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: 28rem;
+  object-fit: contain;
+}
+.access-photo-wide img { max-height: 32rem; }
+.access-photo figcaption {
+  margin-top: 0.7rem;
+  font-size: 0.92rem;
+  line-height: 1.7;
+  color: var(--text-light);
+}
+.access-photo figcaption > strong:first-child {
+  display: block;
+  margin-bottom: 0.25rem;
+  color: var(--text-strong);
+}
+.access-photo-note {
+  color: var(--muted);
+  font-size: 0.92rem;
+}
+.access-photo-steps {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.5rem;
+  padding: 0;
+  margin: 1.25rem 0 1.75rem;
+  list-style: none;
+}
+.access-photo-steps > li {
+  min-width: 0;
+  padding: 0;
+  margin: 0;
+}
+@media (max-width: 640px) {
+  .access-photo-steps { grid-template-columns: 1fr; }
+  .access-photo img { max-height: 30rem; }
+}
+
 .research-coverage {
   clear: both;
   margin: 1.5rem 0;
